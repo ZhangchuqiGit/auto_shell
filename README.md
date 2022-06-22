@@ -32,7 +32,7 @@ clion_launch_cpp.sh
 link_absolute_relative_conversion.sh    
 将 根文件系统 sysroot 目录下所有的 符号链接 进行 "绝对->相对" 转换
 
-linux_cpp.sh
+linux_cpp.sh                                
 遍历当前目录下所有的子目录，gedit 打开多个 cpp 文件
 
 loop_search_file_to_path.sh   
