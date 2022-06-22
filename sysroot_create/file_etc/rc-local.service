@@ -1,0 +1,70 @@
+#  SPDX-License-Identifier: LGPL-2.1+
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+# This unit gets pulled automatically into multi-user.target by
+# systemd-rc-local-generator if /etc/rc.local is executable.
+
+# ---------------------------------
+
+# 服务的说明
+[Unit]
+
+# 自定义 描述
+Description=/etc/rc.local Compatibility
+
+Documentation=man:systemd-rc-local-generator(8)
+ConditionFileIsExecutable=/etc/rc.local
+
+# 在后 ? 启动
+After=network.target
+# After=network.target remote-fs.target nss-lookup.target
+
+# ---------------------------------
+
+# 服务运行参数的设置
+[Service] 
+
+# 后台运行的形式
+Type=forking
+
+# 启动命令
+ExecStart=/etc/rc.local start
+
+# ExecStart=/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+# ExecReload=/usr/bin/supervisorctl reload 重启命令
+# ExecStop= /usr/bin/supervisorctl shutdown 停止命令
+# 注意：启动、重启、停止 命令全部要求使用绝对路径
+
+# 0: 不超时
+TimeoutSec=0
+# TimeoutSec=120sec
+
+RemainAfterExit=yes
+GuessMainPID=no
+
+# Restart=on-failure
+# RestartSec=42s
+# KillMode=process
+# PrivateTmp=True     表示给服务分配独立的临时空间
+# User=www
+# Group=www
+
+# ---------------------------------
+
+# 服务安装的相关设置
+[Install]
+
+# 多用户 模式
+WantedBy=multi-user.target
+
+Alias=rc-local.service
+
+# 开机自动启动脚本设置
+# /etc/rc.local
+# ln -sf /usr/lib/systemd/system/rc-local.service /etc/systemd/system/rc-local.service

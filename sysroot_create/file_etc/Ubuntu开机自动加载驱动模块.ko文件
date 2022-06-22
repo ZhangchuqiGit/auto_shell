@@ -1,0 +1,58 @@
+
+想要加载驱动模块： led.ko
+
+方法00：
+系统：Ubuntu、busybox
+想要加载驱动模块： led.ko
+打开文件 /etc/rc.local
+添加命令：bash  /home/insmod/ko.sh & # 后台运行
+新建脚本 ko.sh
+添加内容：
+...
+insmod /home/insmod/led.ko
+...
+
+方法01：
+系统：Ubuntu、busybox
+想要加载驱动模块： led.ko
+led.ko存放路径：/home/insmod/led.ko
+打开文件 /etc/rc.local
+添加加载命令：insmod /home/insmod/led.ko
+
+
+方法02：
+系统：busybox
+将 ko模块 放到 /lib/modules/$(uname -r)/ 目录下，其中 uname -r 对应你的内核版本
+如 /lib/modules/4.1.15/
+打开文件 /etc/rc.local
+添加执行命令： depmod
+添加指令加载： modprobe 模块名称
+
+方法03：Ubuntu 20.04.2 LTS启动后自动执行某个脚本
+Ubuntu 16.04 版本开始去除了 rc.local 文件，自启动服务方面基本由 systemd 全面接管了。
+创建 /lib/systemd/system/rc-local.service
+添加以下内容：
+
+[Unit]
+Description=/etc/rc.local Compatibility
+ConditionFileIsExecutable=/etc/rc.local
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/etc/rc.local start
+TimeoutSec=0
+RemainAfterExit=yes
+
+
+在/etc/init.d/创建你的脚本
+新建脚本 ko.sh
+修改文件属性　
+sudo chmod 775 add_static_route_to_34_52.sh
+添加到rc脚本里
+sudo update-rc.d add_static_route_to_34_52.sh defaults 90
+
+
+
+
+

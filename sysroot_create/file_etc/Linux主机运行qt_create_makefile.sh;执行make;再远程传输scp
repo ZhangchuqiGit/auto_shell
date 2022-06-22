@@ -1,0 +1,4 @@
+# 先从 Linux 主机 运行 ./qt_create_makefile.sh；执行 make；
+# 再远程传输 scp -p -r ./exe  zcq@192.168.6.231:/${Qt_code_test##*/}/
+# 开发板运行。
+
