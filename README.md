@@ -13,7 +13,10 @@ my shell files
 构建 ARM-ubuntu20 根文件系统
 
 # tools_i.mx6ull
-脚本烧写方式
+i.mx6ull 脚本烧写方式
+
+# tools_itop4412
+itop4412 脚本烧写方式
 
 # ubuntu20-reset-system
 重装ubuntu20后，设置系统环境、优化桌面、安装软件
