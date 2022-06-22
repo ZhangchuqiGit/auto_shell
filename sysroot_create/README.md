@@ -9,10 +9,10 @@
 文件夹 目录下 依次执行： 
 
 ./1_prepare.sh  
-./2_mount_umount.sh 
-./3_chroot.sh 
-./4_final_work.sh 
-./5_tar_sysroot.sh  
+./2_mount_umount.sh   
+./3_chroot.sh   
+./4_final_work.sh   
+./5_tar_sysroot.sh    
 
 方式 02 
 根文件系统 目录下 依次执行： 
