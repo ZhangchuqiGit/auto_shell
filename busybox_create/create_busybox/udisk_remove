@@ -1,0 +1,9 @@
+#!/bin/sh
+
+echo "usbdisk remove!" >/dev/console
+
+umount -l /mnt/usbdisk/sd*
+
+rm -rf /mnt/usbdisk/sd*
+
+exit 0 

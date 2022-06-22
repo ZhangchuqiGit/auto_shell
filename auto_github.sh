@@ -1,7 +1,8 @@
 #!/usr/bin/bash
 
-URL=https://github.com/ZhangchuqiGit/xxx.git
-NAME=ZhangchuqiGit
+URL=https://github.com/xxx/xxx.git
+
+NAME=xxx
 Email="xxx@163.com"
 
 echo "请勿开代理"
@@ -17,7 +18,7 @@ if [ ! -d ${Filename} ]; then
     read _enter
 fi
 
-cd ${Filename} || exit 33
+cd ${Filename} || (echo "------- cd ${Filename}"; exit 33)
 
 git init 
 
@@ -27,4 +28,3 @@ git config --global user.email ${Email}
 git config --global user.name "${URL}"
 git commit -m "update"
 git push 
-

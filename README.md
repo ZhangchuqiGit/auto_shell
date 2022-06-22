@@ -3,6 +3,12 @@ my shell files
 
 -----------------------------------------
 
+# ARM_tool
+自动脚本，用于交叉编译 ARM 依赖包
+
+# busybox_create
+构建 ARM-busybox 根文件系统
+
 # sysroot_create
 构建 ARM-ubuntu20 根文件系统
 
@@ -14,13 +20,13 @@ my shell files
 
 -----------------------------------------
 
-ARM_tool_function.sh  
+ARM_tool_function.sh    
 常用 shell 指令进行 pack，用于 shell 编程
 
-auto_github.sh  
+auto_github.sh    
 修改本地文件，再 [Enter] 同步 github
 
-link_absolute_relative_conversion.sh  
+link_absolute_relative_conversion.sh    
 将 根文件系统 sysroot 目录下所有的 符号链接 进行 "绝对->相对" 转换
 
 loop_search_file_to_path.sh   

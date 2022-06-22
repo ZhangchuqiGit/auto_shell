@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "sd card remove!" >/dev/console
+
+umount -l /mnt/sdcard/sd*
+
+rm -rf /mnt/sdcard/sd*
+exit 0 

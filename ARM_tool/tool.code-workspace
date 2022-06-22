@@ -1,0 +1,33 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"makefile.extensionOutputFolder": "./.vscode",
+		"files.associations": {
+			"common.h": "c",
+			"itop4412_setup.h": "c",
+			"exynos4_setup.h": "c",
+			"spl.h": "c",
+			"config.h": "c",
+			"common_setup.h": "c",
+			"movi.h": "c",
+			"usb_ether.h": "c",
+			"exynos4-common.h": "c",
+			"exynos-common.h": "c",
+			"typeinfo": "c",
+			"fastboot.h": "c",
+			"fastboot-internal.h": "c",
+			"part.h": "c",
+			"command.h": "c",
+			"image-sparse.h": "c",
+			"console.h": "c",
+			"memalign.h": "c",
+			"itop4412.h": "c"
+		},
+		"editor.fontSize": 13,
+		"git.ignoreLimitWarning": true
+	}
+}

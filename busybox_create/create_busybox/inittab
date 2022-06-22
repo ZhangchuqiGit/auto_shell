@@ -1,0 +1,80 @@
+# etc/inittab
+
+# init 程序会读取 /etc/inittab 这个文件, inittab 由若干条指令组成。
+# inittab是一个不可执行的文本文件,它有若干行指令所组成
+
+# inittab 的详细内容可以参考 busybox 下的文件 examples/inittab。
+# 每条指令的结构都是一样的,由以“:”分隔的 4 个段组成,格式如下:
+# <id>:<runlevels>:<action>:<process>
+
+# <id>:每个指令的标识符,不能重复。但是对于 busybox 的 init 来说, <id>有着特殊意义。
+# 对于 busybox 而言<id>用来指定启动进程的控制 tty,
+# 一般我们将串口或者 LCD 屏幕设置为控制 tty。
+
+# <runlevels>: 对 busybox 来说此项完全没用,所以空着。
+#     0:表示关机
+#     1:表示单用户模式,在这个模式中,用户登录不需要密码,默认网卡驱动是不被加载,一些服务不能用。
+#     2:表示多用户模式,NFS服务不开启
+#     3:表示命令行模式
+#     4:这个模式保留未用
+#     5:表示图形用户模式
+#     6:表示重启系统
+
+# <action>:动作,用于指定<process>可能用到的动作。
+# sysinit 在系统初始化的时候 process 才会执行一次。
+# respawn 当 process 终止以后马上启动一个新的。
+# askfirst 和 respawn 类似,在运行 process 之前在控制台上显示“Please press Enter to activate this console.”。只要用户按下“Enter”键以后才会执行 process。
+# wait 告诉 init,要等待相应的进程执行完以后才能继续执行。
+# once 仅执行一次,而且不会等待 process 执行完成。
+# restart 当 init 重启的时候才会执行 procee。
+# ctrlaltdel 当按下 ctrl+alt+del 组合键才会执行 process。
+# shutdown 关机的时候执行
+
+# boot:只有在引导过程中,才执行该进程,但不等待该进程的结束;当该进程死亡时,也不重新启动该进程.
+# bootwait:只有在引导过程中,才执行该进程,并等待进程的结束:当该进程死亡时,也不重新启动该进程.实际上,只有在系统被引导后,并从单用户方式进入多用户方式时,这些登记项才被处理;如果系统的默认运行级设置为2(即多用户方式),那么这些登记项在系统引导后将马上被处理.
+# initdefault:指定系统的默认运行级.系统启动时,init将首先查找该登记项.如果存在init将据此决定系统最初要进入的运行级.具体来说,init将指定登记项“run_level"字段中的最大数字(即最高运行级)为当前系统的默认运行级;如果该字段为空,那么将其解释为“0123456”,并以“6”作为默认运行级.如果不存在该登记项,那么init将要求用户在系统启动时指定一个最初的运行级.
+# off:如果相应的进程正在运行,那么就发出一个警告信号,等待20秒后,再通过杀死信号强行终止该进程.如果相应的进程并不存在那么就忽略该登记项.
+# once:启动相应的进程,但不等待该进程结束便继续处理/etc/inittab文件中的下一个登记项;当该进程死亡时,init也不重新启动该进程.注意:在从一个运行级进入另一个运行级时,如果相应的进程仍然在运行,那么init就不重新启动该进程.
+# ondemand:与“respawn”的功能完全相同,但只用于运行级为a、b或c的登记项.
+# powerfail:只在init接收到电源失败信号时执行相应的进程,但不等待该进程结束.
+# powerwait:只在init接收到电源失败信号时执行相应的进程,并在继续对/etc/inittab文件进行任何处理前等待该进程结束.
+# respawn:如果相应的进程还不存在,那么init就启动该进程,同时不等待该进程的结束就继续扫描/etc/inittab文件;当该进程死亡时,init将重新启动该进程.如果相应的进程已经存在,那么init将忽略该登记项并继续扫描/etc/inittab文件.
+# sysinit:只有在启动或重新启动系统并首先进入单用户时,init才执行这些登记项.而在系统从运行级1－6进入单用户方式时,init并不执行这些登记项."action”字段为“sysinit”的登记项在“run_level”字段不指定任何运行级.
+# wait:启动进程并等待其结束,然后再处理/etc/inittab文件中的下一个登记项
+
+# <process>: 具体的动作,比如程序、脚本或命令等;所要执行的shell命令
+
+# ######################################################################3
+
+# <id>:<runlevels>:<action>:<process>
+
+#this is run first except when booting in single-user mode.
+# 系统启动以后运行/etc/init.d/rcS 这个脚本文件
+::sysinit:/etc/init.d/rcS
+
+# /bin/sh invocations on selected ttys
+#::respawn:-/bin/sh
+
+# 将 console 作为控制台终端,也就是 ttymxc0 / ttySAC2
+console::askfirst:-/bin/sh
+tty1::askfirst:-/bin/sh
+
+# Stuff to do when restarting the init process
+# 重启的话运行/sbin/init
+::restart:/sbin/init
+
+# Stuff to do before rebooting
+# 按下 ctrl+alt+del 组合键的话就运行 /sbin/reboot,
+::ctrlaltdel:/sbin/reboot
+
+# 关机的时候执行/bin/umount,也就是卸载各个文件系统。
+# 关机的时候执行/sbin/swapoff,也就是关闭交换分区
+::shutdown:/bin/umount -a -r
+::shutdown:/sbin/swapoff -a
+
+# ######################################################################3
+
+# Linux系统的启动过程为:
+# 加电自检-->根据BIOS中的设置从指定的设备启动
+# -->找到设备MBR中的bootloader 引导启动系统
+# -->启动 kernel-->启动 init 进程

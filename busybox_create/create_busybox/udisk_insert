@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "usbdisk insert!" > /dev/console
+
+if [ -e "/dev/$MDEV" ]; then
+    mkdir -m 777 -p /mnt/usbdisk/$MDEV
+    mount /dev/$MDEV /mnt/usbdisk/$MDEV
+fi
+
+exit 0 

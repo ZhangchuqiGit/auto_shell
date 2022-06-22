@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo -e "\033[1;32;43m Begin netd \e[0m" >>/dev/ttySAC2
+
+base=inetd
+
+# See how we were called.
+case "$1" in
+	start)
+		/usr/sbin/$base
+        ;;
+	stop)
+		pid=`/bin/pidof $base`
+		 if [ -n "$pid" ]; then
+			kill -9 $pid
+        fi
+        ;;
+esac
+
+echo -e "\033[1;32;43m End netd \e[0m" >>/dev/ttySAC2
+
+exit 0

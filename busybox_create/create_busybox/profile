@@ -1,0 +1,128 @@
+#!/bin/sh
+
+# No core files by default
+# ulimit -S -c 0 >/dev/null 2>&1
+
+if [ -n "$(/bin/hostname)" ]; then
+    /bin/hostname "itop4412"
+fi
+
+if false; then
+    USER="$(id -un)"
+    HOME=/
+else
+    USER=root
+    HOME=/root
+fi
+
+HOSTNAME="$(/bin/hostname)"
+LOGNAME=${USER}
+
+# PS1="[${USER}@${HOSTNAME}]\W\# "
+PS1="[\033[1;32m${USER}\e[0m@\033[1;34m${HOSTNAME}\e[0m]\033[34m\W\e[0m\033[35m\#\e[0m "
+
+# PATH 环境变量保存着可执行文件可能存在的目录
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# LD_LIBRARY_PATH 环境变量保存着库文件所在的目录
+LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib:$LD_LIBRARY_PATH
+
+export USER HOME HOSTNAME LOGNAME PS1 PATH LD_LIBRARY_PATH
+
+################################################################################
+
+if false; then
+    runlevel=S
+    prevlevel=N
+    umask 022
+    export runlevel prevlevel
+fi
+
+################################################################################
+
+# enable color support of ls and also add handy aliases
+
+#alias dir='dir --color=auto'
+#alias vdir='vdir --color=auto'
+
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias vi='vi --color=auto'
+alias ll='ls -alF'
+alias la='ls -a'
+alias l='ls -CF'
+# alias h='history'
+
+################################################################################
+
+if false; then
+
+    ################################################################################
+    EVENT=event2 #
+    # EVENT=$(cat /proc/bus/input/devices | grep -E 'edt-ft5|edt_ft5x06|TSC2007|ft5x0x_ts|goodix-ts' -A4 | tail -n1 | awk '{print $NF}')
+    ################################################################################
+    # 配置 tslib 的环境变量
+
+    export TSLIB_ROOT=/opt/arm_tslib-1.22 # 触摸库所在的位置
+
+    # 设定控制台设备为 none ， 否则默认为 /dev/tty ， 这样可以避免出现“ open consoledevice: No such file or directory KDSETMODE: Bad file descriptor ” 的错误
+    export TSLIB_CONSOLEDEVICE=none
+
+    export TSLIB_FBDEVICE=/dev/fb0                # 指定帧缓冲设备/dev/fb0
+    export TSLIB_TSDEVICE=/dev/input/${EVENT}     # 触摸屏设备文件
+    export TSLIB_CONFFILE=$TSLIB_ROOT/etc/ts.conf # tslib 模块配置文件
+    export TSLIB_PLUGINDIR=$TSLIB_ROOT/lib/ts
+    export TSLIB_TSEVENTTYPE=input
+
+    export LD_PRELOAD=$TSLIB_ROOT/lib/libts.so
+    export QWS_MOUSE_PROTO=tslib:$TSLIB_TSDEVICE
+
+    # export TSLIB_CALIBFILE=/etc/pointercal # 电阻屏专用，如果是电容屏，可不用加这项
+    # 电容屏加了这项，如果使用 ts_calibrate 校准后会生成/etc/pointercal 文件，请把它删除！
+    # 否则可以触摸不准确，因为电容屏不需要校准。
+    ################################################################################
+    # 配置 Qt5 的环境变量
+
+    export QT_ROOT=/opt/arm_qt_5.7.0 # qt 库所在的路径
+
+    export QT_QPA_GENERIC_PLUGINS=tslib:$TSLIB_TSDEVICE
+    export QT_QPA_FONTDIR=$QT_ROOT/lib/fonts            # qt 字库的目录
+    export QT_QPA_PLATFORM_PLUGIN_PATH=$QT_ROOT/plugins # qt 插件的目录
+    export QT_QPA_PLATFORM=linuxfb:tty=$TSLIB_FBDEVICE  # 指定帧缓冲设备/dev/fb0
+    export QT_PLUGIN_PATH=$QT_ROOT/plugins              # qt 插件的目录
+    export QML2_IMPORT_PATH=$QT_ROOT/qml
+
+    export QT_QPA_EGLFS_PHYSICAL_WIDTH=1024 #根据你的显示器设置宽度，单位mm
+    export QT_QPA_EGLFS_PHYSICAL_HEIGHT=600 #根据你的显示器设置高度，单位mm
+
+    export QT_QPA_FB_TSLIB=1
+    screen_size=$(echo $(fbset | grep -E "timings" | awk '{print $3}'))
+    case $screen_size in
+    220)
+        unset QT_QPA_FB_TSLIB
+        ;;
+    213)
+        unset QT_QPA_FB_TSLIB
+        ;;
+    esac
+    ################################################################################
+
+    PKG_CONFIG_LIBDIR=$QT_ROOT/lib # 设置 pkg-config
+    export PKG_CONFIG_LIBDIR
+
+    # 添加 QT 和 触摸库 的环境变量
+
+    # LD_LIBRARY_PATH 环境变量保存着库文件所在的目录
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${PKG_CONFIG_LIBDIR}
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$TSLIB_ROOT/lib:$TSLIB_ROOT/lib/
+    export LD_LIBRARY_PATH
+
+    ################################################################################
+    export TERM=vt100
+    export TERMINFO=/usr/share/terminfo
+    export ALSA_CONFIG_PATH=/usr/share/arm-alsa/alsa.conf
+
+fi
+
+################################################################################

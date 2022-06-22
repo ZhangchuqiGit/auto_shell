@@ -1,0 +1,114 @@
+#! /bin/sh
+
+echo -e "\033[1;35;46m Begin rcS \e[0m" >>/dev/ttySAC2
+
+#####################################################################
+
+# /bin/hostname "zcq-itop-4412"
+
+# Trap CTRL-C &c only in this shell so we can interrupt subprocesses.
+# 仅在此shell中捕获Ctrl-C＆C，因此我们可以中断子过程。
+trap ":" INT QUIT TSTP
+
+#####################################################################
+
+if false; then
+    #/bin/mount -n -t proc none /proc
+    #/bin/mount -n -t sysfs none /sys
+    #/bin/mount -n -t usbfs none /proc/bus/usb
+    #/bin/mount -t ramfs none /dev
+
+    # 挂载的分区
+    [ -e /proc/1 ] || /bin/mount -n -t proc none /proc
+    [ -e /sys/class ] || /bin/mount -n -t sysfs none /sys
+    [ -e /dev/tty ] || /bin/mount -t ramfs none /dev
+else
+    /bin/mount -a # 挂载 fstab 中的所有文件系统 /etc/fstab
+fi
+
+# mounting file system specified in /etc/fstab
+mkdir -m 775 -p /dev/pts /dev/shm
+/bin/mount -n -t devpts devpts /dev/pts
+/bin/mount -n -t tmpfs tmpfs /dev/shm
+
+#####################################################################
+
+# 使用 mdev 来管理热插拔设备，通过这两行， Linux 内核就可以在 /dev 目录下自动创建设备节点。
+# 关于 mdev 的详细内容可以参考 busybox 中的 docs/mdev.txt 文档
+echo '/sbin/mdev' >/proc/sys/kernel/hotplug
+/sbin/mdev -s
+
+# /bin/hotplug
+
+#####################################################################
+
+/etc/init.d/ifconfig-eth0
+
+/etc/rc.d/init.d/netd start
+
+#sleep 1
+#/etc/rc.d/init.d/httpd start
+#echo "Starting web server..." > /dev/ttySAC2
+
+#sleep 1
+#/etc/rc.d/init.d/leds start
+#echo "Starting leds service..." > /dev/ttySAC2
+
+# sleep 1
+# /etc/firmware/load_firmware
+
+####### wifi setting #######
+#/etc/init.d/ath6kl
+#/etc/init.d/mt6620
+
+# sleep 1
+# usleep 10000 # 10ms
+udhcpc
+
+if [ -e /proc/sys/kernel/hung_task_timeout_secs ]; then
+    echo 0 >/proc/sys/kernel/hung_task_timeout_secs
+fi
+
+#####################################################################
+
+# if false; then # 支持 nfs 挂载 为了每次开发板开启时，自动挂载nfs服务器
+if true; then # 支持 nfs 挂载 为了每次开发板开启时，自动挂载nfs服务器
+    echo -e "\033[34m支持 nfs 挂载 为了每次开发板开启时，自动挂载nfs服务器\e[0m"
+    mkdir -m 777 -p /mnt/nfs
+    # pc端虚拟机linux的 ip  192.168.6.40
+    [ -d /mnt/nfs ] && (/bin/mount -t nfs -o nolock 192.168.6.40:/home/zcq/ARM_nfs /mnt/nfs)
+fi
+
+#####################################################################
+
+if false; then
+    amixer cset numid=5 127
+    amixer cset numid=6 1
+    amixer cset numid=30 8,0
+    amixer cset numid=40 1
+    amixer cset numid=43 1
+    amixer cset numid=47 1
+fi
+
+if [ -f "/var/lib/alsa/asound.state" ]; then
+    echo "ALSA: Restoring mixer setting......"
+    alsactl -f /var/lib/alsa/asound.state restore &
+fi
+
+#####################################################################
+
+hwclock -s -f /dev/rtc # 硬件时钟
+
+#####################################################################
+
+#/bin/qtopia &
+#/bin/qt4 &
+
+#####################################################################
+
+echo -e "\033[1;35;46m End rcS \e[0m" >>/dev/ttySAC2
+
+#must run this shell
+# /bin/sh
+
+exit 0
