@@ -12,6 +12,7 @@ echo "\${Filename}=${Filename}"
 
 if [ ! -d ${Filename} ]; then
     git clone ${URL}
+	echo "可以修改文件，再 [Enter] 同步 github"
     echo "enter: continue"
     read _enter
 fi
