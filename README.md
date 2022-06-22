@@ -26,7 +26,7 @@ ARM_tool_function.sh
 auto_github.sh    
 修改本地文件，再 [Enter] 同步 github
 
-clion_launch_cpp.sh
+clion_launch_cpp.sh                         
 遍历当前目录下所有的子目录，打开多个 CLion 工程项目
 
 link_absolute_relative_conversion.sh    
