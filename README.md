@@ -26,8 +26,14 @@ ARM_tool_function.sh
 auto_github.sh    
 修改本地文件，再 [Enter] 同步 github
 
+clion_launch_cpp.sh
+遍历当前目录下所有的子目录，打开多个 CLion 工程项目
+
 link_absolute_relative_conversion.sh    
 将 根文件系统 sysroot 目录下所有的 符号链接 进行 "绝对->相对" 转换
 
+linux_cpp.sh
+遍历当前目录下所有的子目录，gedit 打开多个 cpp 文件
+
 loop_search_file_to_path.sh   
-遍历目录下所有的目录路径，用于添加 VScode、CLion 项目文件的 include/library 路径  
+遍历当前目录下所有的子目录，用于添加 VScode、CLion 项目文件的 include/library 路径  
