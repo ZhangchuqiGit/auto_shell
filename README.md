@@ -29,6 +29,9 @@ ARM_tool_function.sh
 auto_github.sh    
 修改本地文件，再 [Enter] 同步 github
 
+auto_ubuntu_install_qt5    
+ubuntu 安装 qt5 依赖包和库    
+
 clion_launch_cpp.sh                         
 遍历当前目录下所有的子目录，打开多个 CLion 工程项目
 
